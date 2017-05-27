@@ -12,6 +12,8 @@ ATestingGroundsGameMode::ATestingGroundsGameMode()
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPersonCPP/Blueprints/FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
+	
+
 	// use our custom HUD class
 	HUDClass = ATestingGroundsHUD::StaticClass();
 }
