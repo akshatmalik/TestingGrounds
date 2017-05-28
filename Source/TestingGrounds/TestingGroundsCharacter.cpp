@@ -124,6 +124,8 @@ void ATestingGroundsCharacter::OnFire()
 		}
 	}
 
+	MakeNoise(1.0f, this, GetActorLocation());
+
 }
 
 void ATestingGroundsCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
