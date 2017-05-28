@@ -12,7 +12,10 @@ UCLASS()
 class TESTINGGROUNDS_API APatrollingGaurd : public ATP_ThirdPersonCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY(EditInstanceOnly, Category = "Patrol Points")
+		TArray<AActor *> Waypoints;
 	
 	
 	

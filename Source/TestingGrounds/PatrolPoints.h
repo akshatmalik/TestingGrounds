@@ -5,7 +5,9 @@
 #include "Components/ActorComponent.h"
 #include "PatrolPoints.generated.h"
 
-
+/**
+*For choosing waypoints for various actors
+*/
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TESTINGGROUNDS_API UPatrolPoints : public UActorComponent
 {
@@ -21,6 +23,7 @@ public:
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
-		
+	UPROPERTY(EditAnywhere, Category = "Patrol Points")
+		TArray <AActor *> Waypoints;
 	
 };

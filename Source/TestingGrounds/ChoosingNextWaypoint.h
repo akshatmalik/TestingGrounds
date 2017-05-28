@@ -15,5 +15,10 @@ class TESTINGGROUNDS_API UChoosingNextWaypoint : public UBTTaskNode
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	
-	
+protected:
+	UPROPERTY(VisibleAnywhere,Category="Blackboard")
+	struct FBlackboardKeySelector IndexKey;
+
+	UPROPERTY(VisibleAnywhere, Category = "Blackboard")
+	struct FBlackboardKeySelector WaypointKey;
 };
