@@ -6,7 +6,7 @@
 #include "PatrolPoints.generated.h"
 
 /**
-*For choosing waypoints for various actors
+*For choosing way points for various actors
 */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TESTINGGROUNDS_API UPatrolPoints : public UActorComponent
