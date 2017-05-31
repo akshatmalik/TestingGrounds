@@ -4,6 +4,7 @@
 #include "TestingGroundsCharacter.h"
 #include "TestingGroundsProjectile.h"
 #include "Animation/AnimInstance.h"
+#include "Gun.h"
 #include "GameFramework/InputSettings.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -49,6 +50,7 @@ ATestingGroundsCharacter::ATestingGroundsCharacter()
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 30.0f, 10.0f);
 
+
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -58,7 +60,21 @@ void ATestingGroundsCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
-	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint")); //Attach gun mesh component to Skeleton, doing it here because the skelton is not yet created in the constructor
+
+	if (GunBP == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Gun not attached"));
+		return;
+	}
+	Gun = GetWorld()->SpawnActor<AGun>(GunBP);
+	Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint")); 
+	Gun->AnimInstance = Mesh1P->GetAnimInstance();
+
+	if (EnableTouchscreenMovement(InputComponent) == false)
+	{
+		InputComponent->BindAction("Fire", IE_Pressed, this, &ATestingGroundsCharacter::OnFire);
+	}
+	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -73,10 +89,7 @@ void ATestingGroundsCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ATestingGroundsCharacter::TouchStarted);
-	if (EnableTouchscreenMovement(InputComponent) == false)
-	{
-		InputComponent->BindAction("Fire", IE_Pressed, this, &ATestingGroundsCharacter::OnFire);
-	}
+
 
 	InputComponent->BindAxis("MoveForward", this, &ATestingGroundsCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ATestingGroundsCharacter::MoveRight);
@@ -90,43 +103,48 @@ void ATestingGroundsCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	InputComponent->BindAxis("LookUpRate", this, &ATestingGroundsCharacter::LookUpAtRate);
 }
 
+
 void ATestingGroundsCharacter::OnFire()
 {
-	// try and fire a projectile
-	if (ProjectileClass != NULL)
-	{
-		const FRotator SpawnRotation = GetControlRotation();
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			// spawn the projectile at the muzzle
-			World->SpawnActor<ATestingGroundsProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-		}
-	}
-
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-
-	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
-
-	MakeNoise(1.0f, this, GetActorLocation());
-
+	Gun->OnFire();
 }
+//void ATestingGroundsCharacter::OnFire()
+//{
+//	// try and fire a projectile
+//	if (ProjectileClass != NULL)
+//	{
+//		const FRotator SpawnRotation = GetControlRotation();
+//		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+//		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+//
+//		UWorld* const World = GetWorld();
+//		if (World != NULL)
+//		{
+//			// spawn the projectile at the muzzle
+//			World->SpawnActor<ATestingGroundsProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+//		}
+//	}
+//
+//	// try and play the sound if specified
+//	if (FireSound != NULL)
+//	{
+//		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+//	}
+//
+//	// try and play a firing animation if specified
+//	if (FireAnimation != NULL)
+//	{
+//		// Get the animation object for the arms mesh
+//		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+//		if (AnimInstance != NULL)
+//		{
+//			AnimInstance->Montage_Play(FireAnimation, 1.f);
+//		}
+//	}
+//
+//	MakeNoise(1.0f, this, GetActorLocation());
+//
+//}
 
 void ATestingGroundsCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
@@ -148,7 +166,7 @@ void ATestingGroundsCharacter::EndTouch(const ETouchIndex::Type FingerIndex, con
 	}
 	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
 	{
-		OnFire();
+		//OnFire();
 	}
 	TouchItem.bIsPressed = false;
 }

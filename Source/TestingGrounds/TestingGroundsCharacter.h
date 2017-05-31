@@ -4,11 +4,13 @@
 #include "TestingGroundsCharacter.generated.h"
 
 class UInputComponent;
+class AGun;
 
 UCLASS(config=Game)
 class ATestingGroundsCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
@@ -25,6 +27,7 @@ class ATestingGroundsCharacter : public ACharacter
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
+
 public:
 	ATestingGroundsCharacter();
 
@@ -54,6 +57,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class UAnimMontage* FireAnimation;
 
+	//for the gun, which bp to spawn
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		TSubclassOf<AGun> GunBP;
+
+	//setting the gun actor
+	AGun* Gun = nullptr;
 protected:
 	
 	/** Fires a projectile. */
@@ -62,7 +71,7 @@ protected:
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
 
-	/** Handles stafing movement, left and right */
+	/** Handles strafing movement, left and right */
 	void MoveRight(float Val);
 
 	/**
