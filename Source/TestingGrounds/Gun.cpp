@@ -82,6 +82,6 @@ void AGun::OnFire()
 		}
 	}
 
-	MakeNoise(1.0f, GetWorld()->GetFirstPlayerController()->GetControlledPawn(), GetWorld()->GetFirstPlayerController()->GetControlledPawn()->GetActorLocation());
+	//MakeNoise(1.0f, GetWorld()->GetFirstPlayerController()->GetControlledPawn(), GetWorld()->GetFirstPlayerController()->GetControlledPawn()->GetActorLocation());
 
 }
