@@ -60,6 +60,7 @@ void AGun::OnFire()
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
+			
 		{
 			// spawn the projectile at the muzzle
 			World->SpawnActor<ATestingGroundsProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
