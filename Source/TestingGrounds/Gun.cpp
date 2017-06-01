@@ -62,8 +62,9 @@ void AGun::OnFire()
 		if (World != NULL)
 			
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Spawning"));
 			// spawn the projectile at the muzzle
-			World->SpawnActor<ATestingGroundsProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+			World->SpawnActor<ATestingGroundsProjectile>(ProjectileClass, FP_MuzzleLocation->GetComponentLocation(), FP_MuzzleLocation->GetComponentRotation());
 		}
 	}
 
@@ -74,12 +75,21 @@ void AGun::OnFire()
 	}
 
 	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
+	if (FireAnimation1p != NULL)
 	{
 		// Get the animation object for the arms mesh
-		if (AnimInstance != NULL)
+		if (AnimInstance1p != NULL)
 		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
+			AnimInstance1p->Montage_Play(FireAnimation1p, 1.f);
+		}
+	}
+
+	if (FireAnimation3p != NULL)
+	{
+		// Get the animation object for the arms mesh
+		if (AnimInstance3p != NULL)
+		{
+			AnimInstance3p->Montage_Play(FireAnimation3p, 1.f);
 		}
 	}
 
